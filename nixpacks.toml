@@ -5,7 +5,7 @@ nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.pdo_sqlite", "php82E
 cmds = [
     "composer install --no-dev",
     "touch database/database.sqlite",
-    "php artisan migrate --force",
+    "php artisan migrate:fresh --force",
     "php artisan db:seed --force"
 ]
 
