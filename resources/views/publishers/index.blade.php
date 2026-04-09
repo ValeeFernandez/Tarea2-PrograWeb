@@ -4,15 +4,14 @@
 
 <h1>Publishers</h1>
 
+<a href="/publishers/create" class="btn">+ Add Publisher</a>
+
 <div class="grid">
     @foreach($publishers as $publisher)
-        <div class="card">
-            <h3>{{ $publisher['name'] }}</h3>
-
-            <a href="/publishers/{{ $publisher['id'] }}">
-                View details →
-            </a>
-        </div>
+    <div class="card">
+        <h3>{{ $publisher->name }}</h3>
+        <a href="/publishers/{{ $publisher->id }}">View details →</a>
+    </div>
     @endforeach
 </div>
 

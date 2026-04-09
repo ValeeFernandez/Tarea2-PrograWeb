@@ -1,98 +1,45 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Publisher;
 
 class PublisherController extends Controller
 {
-    // PUBLISHERS ARRAY
-    private $publishers = [
-        [
-            "id" => 1,
-            "name" => "John Wiley & Sons",
-            "country" => "United States",
-            "founded" => 1807,
-            "genere" => "Academic"
-        ],
-        [
-            "id" => 2,
-            "name" => "Pearson Education",
-            "country" => "United Kingdom",
-            "founded" => 1844,
-            "genere" => "Education"
-        ]
-    ];
-
-    // BOOKS ARRAY
-    private $books = [
-        [
-            "id" => 1,
-            "title" => "Operating System Concepts",
-            "author_id" => 1,
-            "publisher_id" => 1
-        ],
-        [
-            "id" => 2,
-            "title" => "Database System Concepts",
-            "author_id" => 1,
-            "publisher_id" => 1
-        ],
-        [
-            "id" => 3,
-            "title" => "Computer Networks",
-            "author_id" => 2,
-            "publisher_id" => 2
-        ],
-        [
-            "id" => 4,
-            "title" => "Modern Operating Systems",
-            "author_id" => 2,
-            "publisher_id" => 2
-        ]
-    ];
-
-    // Publishers list
     public function index()
     {
-        return view('publishers.index', [
-            'publishers' => $this->publishers
-        ]);
+        $publishers = Publisher::all();
+        return view('publishers.index', compact('publishers'));
     }
 
-    // Publisher details
     public function show($id)
     {
-        $publisherFound = null;
+        $publisher = Publisher::findOrFail($id);
+        $books = $publisher->books;
+        return view('publishers.show', compact('publisher', 'books'));
+    }
 
-        // Search publisher by id
-        foreach ($this->publishers as $publisher) {
+    public function create()
+    {
+        return view('publishers.create');
+    }
 
-            if ($publisher["id"] == $id) {
-                $publisherFound = $publisher;
-                break;
-            }
+    public function store(Request $request)
+    {
+        Publisher::create($request->all());
+        return redirect('/publishers');
+    }
 
-        }
-        if (!$publisherFound) {
-            return "Editorial no encontrada";
-        }
+    public function edit($id)
+    {
+        $publisher = Publisher::findOrFail($id);
+        return view('publishers.edit', compact('publisher'));
+    }
 
-        // Search for books by the publisher
-        $booksByPublisher = [];
-
-        foreach ($this->books as $book) {
-            if ($book["publisher_id"] == $id) {
-                $booksByPublisher[] = [
-                    "id" => $book["id"],
-                    "title" => $book["title"]
-                ];
-            }
-        }
-
-       return view('publishers.show', [
-            'publisher' => $publisherFound,
-            'books' => $booksByPublisher
-    ]);
+    public function update(Request $request, $id)
+    {
+        $publisher = Publisher::findOrFail($id);
+        $publisher->update($request->all());
+        return redirect('/publishers/' . $id);
     }
 }
